@@ -109,15 +109,26 @@ void sortInventory(void) {
     }
 }
 
-// Adds a boat to the inventory and re-sorts the list
+// Adds a boat to the inventory, checking for duplicates, and re-sorts the list
 void addBoat(Boat *boat) {
     if (boatCount >= MARINA_MAX_BOAT_CAPACITY) {
         printf("Inventory full, cannot add more boats.\n");
+        free(boat); // Free the boat that couldn't be added
         return;
     }
+
+    // Check if a boat with the same name already exists
+    if (findBoat(boat->name) != -1) {
+        printf("Error: A boat named '%s' already exists in the inventory.\n", boat->name);
+        free(boat); // Free the duplicate boat
+        return;
+    }
+
+    // Add the boat and sort
     boatInventory[boatCount++] = boat;
     sortInventory();
 }
+
 // Searches for a boat by name (case-insensitive).
 // Returns the index if found, or -1 if not.
 int findBoat(const char *name) {
