@@ -40,7 +40,7 @@ geoff@johnston: BoatManagement BoatData.csv
 Welcome to the Boat Management System
 -------------------------------------
 
-(I)nventory, (A)dd, (R)emove, (P)ayment, (M)onth, e(X)it : Q
+(I)nventory, (A)dd, (R)emove, (P)ayment, (M)onth, e(X)it : *Q*
 Invalid option Q
 
 (I)nventory, (A)dd, (R)emove, (P)ayment, (M)onth, e(X)it : i
