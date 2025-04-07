@@ -1,7 +1,9 @@
 /*                      -- boat.h --
- * HEADER FILE -
- * declares
+ * HEADER FILE - Declares the Boat struct, related types (enums, unions),
+ * constants, and function prototypes for boat data management.
  *
+ * declares important constants for the definition of a boat.
+ * 
  */
 
 #ifndef BOAT_H

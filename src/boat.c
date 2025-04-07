@@ -1,6 +1,9 @@
 /*                       -- boat.c --
+ * Implements the core functionality for managing boat data structures,
+ * including adding, removing, finding, sorting, and updating monthly charges.
+ *
 
-ALL FUNCTIONALITY FOR BOATS IN THIS FILE
+ ALL FUNCTIONALITY FOR BOATS IN THIS FILE
 
 Definition of a boat (as relevant to this program):
 

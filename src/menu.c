@@ -3,7 +3,8 @@
  * menu.c : UI stuff for command line interface. 
  *
  * Not too complicated, just contains the functionality for user interactivity.
- *
+ * Handles all functions from the user with csv and boat functions. 
+ * Now that I think about it, this probably should've been in main...
  *
 */
 

@@ -1,6 +1,7 @@
 /*                         -- csv.h --
+ * HEADER FILE - Declares functions for reading from and writing to CSV files,
+ * specifically for boat data persistence.
  *
- * HEADER FILE - 
  * don't really need to create a header file but I feel it's more
  * organized this way.
  *

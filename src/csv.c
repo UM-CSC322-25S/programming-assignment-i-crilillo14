@@ -1,5 +1,7 @@
 /*
- *  csv.c -- csv file functionality - boils down to read and write ops. 
+ *  csv.c -- csv file functionality - boils down to read and write ops.
+ *  Provides functions to parse CSV lines into Boat structures, load boats from a file,
+ *  and save the current boat inventory back to a CSV file.
  */
 
 #include "../include/csv.h"
