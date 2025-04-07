@@ -11,11 +11,11 @@
 #ifndef CSV_H
 #define CSV_H
 
-#include "boat.h"
+#include "boat.h" // to be able to use boat stuff
 #include <stdio.h>
 
 int loadBoatsFromFile(const char *filename);    // load from csv to boatInventory
 int saveBoatsToFile(const char *filename);      // write boats to csv
-Boat *CSVparseLine(const char *line);           // csv line to boat obj
+Boat *CSVparseLine(const char *line);           // csv line to boat obj - less straightforward.
 
 #endif
