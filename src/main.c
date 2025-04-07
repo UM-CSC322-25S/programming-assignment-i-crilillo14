@@ -36,10 +36,10 @@ int main(int argc, char *argv[]) {
     printf("Welcome to the Boat Management System\n");
     printf("-------------------------------------\n");
     
-    // Enter the menu loop.
+    // menu.c func for main loop
     runMenu();
     
-    // Save the current inventory back to the CSV file.
+    // after exiting, save boatInventory back to csv
     if (saveBoatsToFile(argv[1]) != 0) {
         printf("Failed to save boat data to file: %s\n", argv[1]);
     }
