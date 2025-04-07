@@ -18,9 +18,8 @@
 // ok, so there's no constraint for the licence tag length, but mallocing for
 // *char instead of some char[] with fixed lenght is goign to be SO MUCH easier.
 // from the given sample output, it seems that it's at most 6 chars, +1 for null
-// terminator, so to keep it safe, im having it be 10. 9 chars, one null
-// terminator if for some reason there's a country that uses more.
-#define MAX_LICENSE_TAG_LENGTH 10
+// terminator.
+#define MAX_LICENSE_TAG_LENGTH 7
 
 // TYPEDEFS
 // ---------------------------------------------------------------------------------------

@@ -57,6 +57,9 @@ void printInventory(void) {
     }
 }
 
+
+// -----------------------------------------------------------------------------
+
 // Runs the main menu loop, processing user commands.
 void runMenu(void) {
     char input[INPUT_SIZE];
