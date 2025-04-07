@@ -1,6 +1,6 @@
 /*
  *
- * menu.c : GUI stuff for command line interface. 
+ * menu.c : UI stuff for command line interface. 
  *
  * Not too complicated, just contains the functionality for user interactivity.
  *
@@ -15,7 +15,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#define INPUT_SIZE 256
+#define INPUT_SIZE 256 // should def make sure this covers all cases.
 
 // Prints the current boat inventory in a formatted table.
 void printInventory(void) {
@@ -25,32 +25,35 @@ void printInventory(void) {
     }
     for (int i = 0; i < getBoatCount(); i++) {
         Boat *boat = getBoatAt(i);
-        // Boat name padded to 20 characters
+        // to be completely honest, 
+        // got all the padding and alignment from outside sources.
+
+        // name padded to 20 characters
         printf("%-20s", boat->name);
         // Boat length in feet (with apostrophe)
         printf("%3d' ", boat->length);
         // Place type (left-justified in an 8-character field)
         printf("%-8s", PlaceToString(boat->place));
-        // Extra info based on the place type - aiming for ~10 char width total, right-aligned numbers/tags
+        // Extra info based on the placeType:
         switch (boat->place) {
             case slip:
-                printf("   #%4d   ", boat->extraInfo.slipNumber); // 3 + 1 + 4 + 3 = 11
+                printf("   #%4d   ", boat->extraInfo.slipNumber); 
                 break;
             case land:
-                printf(" %7c   ", boat->extraInfo.bayLetter);   // 1 + 7 + 3 = 11
+                printf(" %7c   ", boat->extraInfo.bayLetter);  
                 break;
             case trailor:
-                printf("   %8s", boat->extraInfo.licenseTag);    // 3 + 8 = 11 (right align tag)
+                printf("   %8s", boat->extraInfo.licenseTag);    
                 break;
             case storage:
-                printf("   #%4d   ", boat->extraInfo.storageNumber);// 3 + 1 + 4 + 3 = 11
+                printf("   #%4d   ", boat->extraInfo.storageNumber);
                 break;
             default:
-                printf("           "); // 11 spaces for alignment if no place
+                printf("           "); 
                 break;
         }
         // Money owed formatted with 2 decimal places, right aligned in its field
-        printf(" Owes $%8.2f\n", boat->moneyOwed);
+        printf(" Owes $%g\n", boat->moneyOwed);
     }
 }
 
@@ -71,7 +74,7 @@ void runMenu(void) {
         if (option == 'x') {
             break;
         }
-        
+
         switch (option) {
             case 'i': {
                 printInventory();
@@ -123,7 +126,7 @@ void runMenu(void) {
                 break;
             }
             case 'm': {
-                // Update monthly charges for all boats
+                // Update monthly charges
                 for (int i = 0; i < getBoatCount(); i++) {
                     updateMonthlyCharges(getBoatAt(i));
                 }

@@ -8,13 +8,22 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Helper function to remove a trailing newline character from a string.
+
+// HELPER FUNCTION
+// -----------------------------------------------------------------------------
+
+// it's always the same helper function to replace \n with \0.
+// should be a function in string.h tbh
 static void trim_newline(char *str) {
     size_t len = strlen(str);
     if (len > 0 && str[len - 1] == '\n') {
         str[len - 1] = '\0';
     }
 }
+
+// PARSING
+// -----------------------------------------------------------------------------
+
 
 // Parses a CSV-formatted line and returns a pointer to a newly allocated Boat struct.
 // Expected CSV format: 
@@ -29,34 +38,43 @@ static void trim_newline(char *str) {
 //
 //   MOST IMPORTANT FN IN THE PROGRAM
 Boat *CSVparseLine(const char *line) {
-    // Duplicate the line (since strtok modifies the string)
+
+    // dupe line since strtok modifies it
     char *lineCopy = strdup(line);
     if (!lineCopy) return NULL;
     
-    Boat *boat = malloc(sizeof(Boat));
-    if (!boat) {
+    Boat *boat = malloc(sizeof(Boat)); // new boat to be written to
+
+    // could fail in malloc
+    if (!boat) { 
         free(lineCopy);
         return NULL;
     }
     
+    // BY TOKEN : 
+    // get chars up to ","
+    // if no token, read fail
+    // if token, cast it to appropriate dtype
+    // write to boat->___.
+
     char *token = NULL;
-    // Token 1: Boat name
+    // token 1: Boat name
     token = strtok(lineCopy, ",");
     if (!token) { free(boat); free(lineCopy); return NULL; }
     strncpy(boat->name, token, MAX_BOAT_NAME_LENGTH - 1);
-    boat->name[MAX_BOAT_NAME_LENGTH - 1] = '\0';
+    boat->name[MAX_BOAT_NAME_LENGTH - 1] = '\0'; // could be improved, play it safe
     
-    // Token 2: Boat length
+    // token 2: boat length
     token = strtok(NULL, ",");
     if (!token) { free(boat); free(lineCopy); return NULL; }
-    boat->length = (uint8_t)atoi(token);
+    boat->length = (uint8_t)atoi(token); // convert str -> int, cast to uint8
     
-    // Token 3: Place type string
+    // token 3: placeType string
     token = strtok(NULL, ",");
     if (!token) { free(boat); free(lineCopy); return NULL; }
-    boat->place = StringToPlaceType(token);
+    boat->place = StringToPlaceType(token); 
     
-    // Token 4: Extra info (depends on placeType)
+    // token 4: Extra info (depends on placeType)
     token = strtok(NULL, ",");
     if (!token) { 
       free(boat); 
@@ -73,6 +91,7 @@ Boat *CSVparseLine(const char *line) {
             boat->extraInfo.bayLetter = token[0];
             break;
         case trailor:
+            // strncopy and make it a valid string 
             strncpy(boat->extraInfo.licenseTag, token, MAX_LICENSE_TAG_LENGTH - 1);
             boat->extraInfo.licenseTag[MAX_LICENSE_TAG_LENGTH - 1] = '\0';
             break;
@@ -86,15 +105,21 @@ Boat *CSVparseLine(const char *line) {
     // Token 5: Money owed
     token = strtok(NULL, ",");
     if (!token) { free(boat); free(lineCopy); return NULL; }
-    boat->moneyOwed = atof(token);
+    boat->moneyOwed = atof(token); // to double
     
     free(lineCopy);
     return boat;
 }
 
+
+
+// READING FROM CSV + LOADING TO BOATS
+// -----------------------------------------------------------------------------
+
 // Loads boats from a CSV file.
-// For each nonempty line in the file, a Boat is created and added to the inventory.
-// Returns 0 on success, or -1 if there was an error opening the file.
+// for each nonempty line in BoatData.csv, make a boat and add it
+// return -1 if err from opening file,
+// else 0 if all good.
 int loadBoatsFromFile(const char *filename) {
     FILE *fp = fopen(filename, "r");
     if (!fp) {
@@ -116,9 +141,13 @@ int loadBoatsFromFile(const char *filename) {
     return 0;
 }
 
-// Saves the current boat inventory to a CSV file.
-// Each boat is written in the format: name,length,place,extra,moneyOwed
-// Returns 0 on success, or -1 if there was an error opening the file.
+// WRITING TO CSV
+// -----------------------------------------------------------------------------
+
+
+// saves current boatInventory to BoatData.csv
+// same return conditions as load
+// simplest fn
 int saveBoatsToFile(const char *filename) {
     FILE *fp = fopen(filename, "w");
     if (!fp) {
@@ -128,6 +157,9 @@ int saveBoatsToFile(const char *filename) {
     
     for (int i = 0; i < getBoatCount(); i++) {
         Boat *boat = getBoatAt(i);
+
+        // simple, writing to file just depends on the placeType.
+
         switch (boat->place) {
             case slip:
                 fprintf(fp, "%s,%d,%s,%d,%.2f\n",

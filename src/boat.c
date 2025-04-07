@@ -1,4 +1,6 @@
-/*
+/*                       -- boat.c --
+
+ALL FUNCTIONALITY FOR BOATS IN THIS FILE
 
 Definition of a boat (as relevant to this program):
 
@@ -87,8 +89,8 @@ char *PlaceToString(PlaceType Place) {
 // ------------------------------------------------------------------------
 
 // Initialize the boat inventory array and count.
-// Resetting boatCount here is redundant as it's initialized globally,
-// but explicitly setting pointers to NULL is good practice.
+// Resetting boatCount here is redundant but dont wanna risk it
+// also setting to null cus I dont wanna risk it
 void initializeBoatInventory(void) {
     // boatCount = 0; // Already initialized globally
     for (int i = 0; i < MARINA_MAX_BOAT_CAPACITY; i++) {
@@ -96,41 +98,49 @@ void initializeBoatInventory(void) {
     }
 }
 
-// Comparison function used by qsort (alphabetical, case-insensitive)
+// custom comparison used by qsort { alphabetical, case-insensitive }
 static int compareBoats(const void *a, const void *b) {
     Boat *boatA = *(Boat **)a;
     Boat *boatB = *(Boat **)b;
     return strcasecmp(boatA->name, boatB->name);
 }
 
+// thank god I didn't have to implement sorting.
+// wouldn't have been that bad but still good. 
 void sortInventory(void) {
     if (boatCount > 1) {
         qsort(boatInventory, boatCount, sizeof(Boat *), compareBoats);
     }
 }
 
-// Adds a boat to the inventory, checking for duplicates, and re-sorts the list
+// Adds a boat to the inventory, 
+// checking for duplicates,
+// re-sorts the list
 void addBoat(Boat *boat) {
+  // IMPORTANT, if addign doesn't work, the boat memory has to be freed,
+
     if (boatCount >= MARINA_MAX_BOAT_CAPACITY) {
         printf("Inventory full, cannot add more boats.\n");
         free(boat); // Free the boat that couldn't be added
         return;
     }
 
-    // Check if a boat with the same name already exists
+    // check if it's already there
+    // it might make more sense to use the license but it's not like 
+    // this is required functionality either.
     if (findBoat(boat->name) != -1) {
         printf("Error: A boat named '%s' already exists in the inventory.\n", boat->name);
-        free(boat); // Free the duplicate boat
+        free(boat);
         return;
     }
 
-    // Add the boat and sort
+    // add the boat and sort
     boatInventory[boatCount++] = boat;
     sortInventory();
 }
 
-// Searches for a boat by name (case-insensitive).
-// Returns the index if found, or -1 if not.
+// finds boat by name
+// Returns the index if found or -1 if not
 int findBoat(const char *name) {
     for (int i = 0; i < boatCount; i++) {
         if (strcasecmp(boatInventory[i]->name, name) == 0) {
@@ -141,13 +151,17 @@ int findBoat(const char *name) {
 }
 
 
+// remove by name, not by index. 
+// free mem of boat and shift whole array (like in csc220)
 int removeBoat(const char *name) {
     int index = findBoat(name);
     if (index == -1) {
         return -1;
     }
+
     free(boatInventory[index]);
-    // Shift remaining boats to keep the array packed
+
+    // shift
     for (int i = index; i < boatCount - 1; i++) {
         boatInventory[i] = boatInventory[i + 1];
     }
@@ -156,13 +170,14 @@ int removeBoat(const char *name) {
     return 0;
 }
 
-// Returns the number of boats currently in the inventory.
-// might not be necessary. too simple
+// was going to implement a more complicated solution
+// keeping track of boatcount is so much easier. 
+// this is more like a wrapper
 int getBoatCount(void) {
     return boatCount;
 }
 
-// Returns a pointer to the boat at the given index (or NULL if invalid)
+// Returns a pointer to the boat at index or null
 Boat *getBoatAt(int index) {
     if (index < 0 || index >= boatCount) {
         return NULL;
@@ -170,8 +185,8 @@ Boat *getBoatAt(int index) {
     return boatInventory[index];
 }
 
-// Update the monthly charge for a single boat by adding (length * rate)
-// where the rate depends on the boat's place.
+// Update the monthly charge for a single boat by adding length * rate
+// where the rate depends on the boat's place [CONSTANTS UP TOP]
 void updateMonthlyCharges(Boat *boat) {
     double rate = 0.0;
     switch (boat->place) {
@@ -195,7 +210,7 @@ void updateMonthlyCharges(Boat *boat) {
 }
 
 
-// Free all allocated boats and reset the inventory.
+// Free all allocated boats. AFTER WRITING TO CSV!!!!
 void freeAllBoats(void) {
     for (int i = 0; i < boatCount; i++) {
         free(boatInventory[i]);
