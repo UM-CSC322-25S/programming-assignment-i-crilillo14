@@ -58,15 +58,16 @@ extern Boat *boatInventory[MARINA_MAX_BOAT_CAPACITY];
 extern int boatCount;
 
 // FUNCTIONS ------------------------------------------------------------------------------
+void initializeBoatInventory(void);
 PlaceType StringToPlaceType(char *PlaceString);
 char *PlaceToString(PlaceType Place);
 void addBoat(Boat *boat);
 int removeBoat(const char *name);
 int findBoat(const char *name);
-int getBoatCount();
+int getBoatCount(void);
 Boat *getBoatAt(int index);
 void updateMonthlyCharges(Boat *boat);
-void freeAllBoats();
+void freeAllBoats(void);
 
 
 #endif // BOAT_H

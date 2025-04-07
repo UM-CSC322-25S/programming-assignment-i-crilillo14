@@ -28,6 +28,10 @@ Depending on the type, extra relevant information (use a union):
 #include <stdlib.h>
 #include <string.h>
 
+// Define global variables for boat inventory
+Boat *boatInventory[MARINA_MAX_BOAT_CAPACITY];
+int boatCount = 0;
+
 // Monthly rates per foot
 const double SLIP_RATE = 12.50;
 const double LAND_RATE = 14.00;
@@ -82,9 +86,11 @@ char *PlaceToString(PlaceType Place) {
 // CORE CLASS FUNCTIONALITY
 // ------------------------------------------------------------------------
 
-
-void initializeBoatInventory() {
-    boatCount = 0;
+// Initialize the boat inventory array and count.
+// Resetting boatCount here is redundant as it's initialized globally,
+// but explicitly setting pointers to NULL is good practice.
+void initializeBoatInventory(void) {
+    // boatCount = 0; // Already initialized globally
     for (int i = 0; i < MARINA_MAX_BOAT_CAPACITY; i++) {
         boatInventory[i] = NULL;
     }
@@ -97,7 +103,7 @@ static int compareBoats(const void *a, const void *b) {
     return strcasecmp(boatA->name, boatB->name);
 }
 
-void sortInventory() {
+void sortInventory(void) {
     if (boatCount > 1) {
         qsort(boatInventory, boatCount, sizeof(Boat *), compareBoats);
     }
@@ -141,7 +147,7 @@ int removeBoat(const char *name) {
 
 // Returns the number of boats currently in the inventory.
 // might not be necessary. too simple
-int getBoatCount() {
+int getBoatCount(void) {
     return boatCount;
 }
 
@@ -179,7 +185,7 @@ void updateMonthlyCharges(Boat *boat) {
 
 
 // Free all allocated boats and reset the inventory.
-void freeAllBoats() {
+void freeAllBoats(void) {
     for (int i = 0; i < boatCount; i++) {
         free(boatInventory[i]);
         boatInventory[i] = NULL;
