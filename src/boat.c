@@ -28,6 +28,12 @@ Depending on the type, extra relevant information (use a union):
 #include <stdlib.h>
 #include <string.h>
 
+// Monthly rates per foot
+const double SLIP_RATE = 12.50;
+const double LAND_RATE = 14.00;
+const double TRAILOR_RATE = 25.00;
+const double STORAGE_RATE = 11.20;
+
 // STRING UTILITY
 // --------------------------------------------------------------------------------
 
@@ -49,7 +55,7 @@ PlaceType StringToPlaceType(char *PlaceString) {
   }
   return (no_place);
 }
-//-------------------------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
 
 // { given by professor }
 //----Convert a place to a string
@@ -75,3 +81,108 @@ char *PlaceToString(PlaceType Place) {
 
 // CORE CLASS FUNCTIONALITY
 // ------------------------------------------------------------------------
+
+
+void initializeBoatInventory() {
+    boatCount = 0;
+    for (int i = 0; i < MARINA_MAX_BOAT_CAPACITY; i++) {
+        boatInventory[i] = NULL;
+    }
+}
+
+// Comparison function used by qsort (alphabetical, case-insensitive)
+static int compareBoats(const void *a, const void *b) {
+    Boat *boatA = *(Boat **)a;
+    Boat *boatB = *(Boat **)b;
+    return strcasecmp(boatA->name, boatB->name);
+}
+
+void sortInventory() {
+    if (boatCount > 1) {
+        qsort(boatInventory, boatCount, sizeof(Boat *), compareBoats);
+    }
+}
+
+// Adds a boat to the inventory and re-sorts the list
+void addBoat(Boat *boat) {
+    if (boatCount >= MARINA_MAX_BOAT_CAPACITY) {
+        printf("Inventory full, cannot add more boats.\n");
+        return;
+    }
+    boatInventory[boatCount++] = boat;
+    sortInventory();
+}
+// Searches for a boat by name (case-insensitive).
+// Returns the index if found, or -1 if not.
+int findBoat(const char *name) {
+    for (int i = 0; i < boatCount; i++) {
+        if (strcasecmp(boatInventory[i]->name, name) == 0) {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+int removeBoat(const char *name) {
+    int index = findBoat(name);
+    if (index == -1) {
+        return -1;
+    }
+    free(boatInventory[index]);
+    // Shift remaining boats to keep the array packed
+    for (int i = index; i < boatCount - 1; i++) {
+        boatInventory[i] = boatInventory[i + 1];
+    }
+    boatInventory[boatCount - 1] = NULL;
+    boatCount--;
+    return 0;
+}
+
+// Returns the number of boats currently in the inventory.
+// might not be necessary. too simple
+int getBoatCount() {
+    return boatCount;
+}
+
+// Returns a pointer to the boat at the given index (or NULL if invalid)
+Boat *getBoatAt(int index) {
+    if (index < 0 || index >= boatCount) {
+        return NULL;
+    }
+    return boatInventory[index];
+}
+
+// Update the monthly charge for a single boat by adding (length * rate)
+// where the rate depends on the boat's place.
+void updateMonthlyCharges(Boat *boat) {
+    double rate = 0.0;
+    switch (boat->place) {
+        case slip:
+            rate = SLIP_RATE;
+            break;
+        case land:
+            rate = LAND_RATE;
+            break;
+        case trailor:
+            rate = TRAILOR_RATE;
+            break;
+        case storage:
+            rate = STORAGE_RATE;
+            break;
+        default:
+            rate = 0.0;
+            break;
+    }
+    boat->moneyOwed += boat->length * rate;
+}
+
+
+// Free all allocated boats and reset the inventory.
+void freeAllBoats() {
+    for (int i = 0; i < boatCount; i++) {
+        free(boatInventory[i]);
+        boatInventory[i] = NULL;
+    }
+    boatCount = 0;
+}

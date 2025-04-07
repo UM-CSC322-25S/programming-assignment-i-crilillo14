@@ -7,7 +7,6 @@
 #ifndef BOAT_H
 #define BOAT_H
 
-#include <cstdint>
 #include <stdint.h>
 
 // CONSTANTS
@@ -15,11 +14,12 @@
 
 #define MAX_BOAT_NAME_LENGTH 128 // +1 for null terminator: s[127] + \0
 #define MARINA_MAX_BOAT_CAPACITY 120
+
 // ok, so there's no constraint for the licence tag length, but mallocing for
 // *char instead of some char[] with fixed lenght is goign to be SO MUCH easier.
 // from the given sample output, it seems that it's at most 6 chars, +1 for null
 // terminator, so to keep it safe, im having it be 10. 9 chars, one null
-// terminator
+// terminator if for some reason there's a country that uses more.
 #define MAX_LICENSE_TAG_LENGTH 10
 
 // TYPEDEFS
@@ -57,16 +57,16 @@ typedef struct {
 extern Boat *boatInventory[MARINA_MAX_BOAT_CAPACITY];
 extern int boatCount;
 
-// Function declarations
+// FUNCTIONS ------------------------------------------------------------------------------
 PlaceType StringToPlaceType(char *PlaceString);
 char *PlaceToString(PlaceType Place);
-void initializeBoatInventory();
-int addBoat(const char *csvLine);
+void addBoat(Boat *boat);
 int removeBoat(const char *name);
-int findBoatByName(const char *name);
-void makePayment(const char *name, double payment);
-void updateMonthlyCharges();
-void sortInventory();
-void freeBoatInventory();
+int findBoat(const char *name);
+int getBoatCount();
+Boat *getBoatAt(int index);
+void updateMonthlyCharges(Boat *boat);
+void freeAllBoats();
+
 
 #endif // BOAT_H
