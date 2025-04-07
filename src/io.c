@@ -1,3 +1,4 @@
 /*
- *  io.c -- csv file functionality - read, write, update, etc 
+ *  io.c -- csv file functionality - boils down to read and write ops. 
  */
+

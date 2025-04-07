@@ -3,3 +3,9 @@
  *
  * 
  */
+
+#include "../include/main.h"
+#include "boat.c"
+#include "io.c"
+
+
